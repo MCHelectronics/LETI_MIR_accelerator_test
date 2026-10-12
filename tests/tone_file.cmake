@@ -1,0 +1,20 @@
+# These are test-owned files inside the selected build directory.
+file(REMOVE "${OUT}" "${OUT}.json")
+execute_process(COMMAND "${PROGRAM}" "${OUT}" 1000000 100000 0.01 0.5 RESULT_VARIABLE result)
+if(NOT result EQUAL 0)
+  message(FATAL_ERROR "Generator failed: ${result}")
+endif()
+file(SIZE "${OUT}" bytes)
+file(READ "${OUT}" first LIMIT 8 HEX)
+file(READ "${OUT}.json" metadata)
+string(JSON count GET "${metadata}" sample_count)
+string(JSON format GET "${metadata}" format)
+if(NOT bytes EQUAL 80000 OR NOT count EQUAL 10000 OR
+   NOT first STREQUAL "0000003f00000000" OR NOT format STREQUAL "cf32_le_iq")
+  message(FATAL_ERROR "Incorrect size/count/first IQ sample/format")
+endif()
+execute_process(COMMAND "${PROGRAM}" "${OUT}" 1000000 100000 0.01 0.5
+  RESULT_VARIABLE overwrite_result OUTPUT_QUIET ERROR_QUIET)
+if(overwrite_result EQUAL 0)
+  message(FATAL_ERROR "Generator overwrote an existing file")
+endif()

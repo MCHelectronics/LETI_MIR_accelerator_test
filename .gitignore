@@ -1,0 +1,10 @@
+/build/
+/.vscode/
+*.cf32
+*.cf32.json
+*.log
+*.swp
+*~
+build/
+.cache/
+*.wav

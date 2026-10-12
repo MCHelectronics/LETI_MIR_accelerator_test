@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE context [
+  <!ELEMENT context (device)*>
+  <!ATTLIST context name CDATA #REQUIRED description CDATA #IMPLIED>
+  <!ELEMENT device (channel)*>
+  <!ATTLIST device id CDATA #REQUIRED name CDATA #IMPLIED>
+  <!ELEMENT channel (scan-element)>
+  <!ATTLIST channel id CDATA #REQUIRED type CDATA #REQUIRED>
+  <!ELEMENT scan-element EMPTY>
+  <!ATTLIST scan-element index CDATA #REQUIRED format CDATA #REQUIRED>
+]>
+<context name="xml" description="Synthetic fixture, not a device capture">
+  <device id="iio:device0" name="ad9361-phy"/>
+  <device id="iio:device1" name="cf-ad9361-lpc">
+    <channel id="voltage0" type="input"><scan-element index="0" format="le:s12/16&gt;&gt;4"/></channel>
+    <channel id="voltage1" type="input"><scan-element index="1" format="le:s12/16&gt;&gt;4"/></channel>
+    <channel id="voltage2" type="input"><scan-element index="2" format="le:s12/16&gt;&gt;4"/></channel>
+    <channel id="voltage3" type="input"><scan-element index="3" format="le:s12/16&gt;&gt;4"/></channel>
+  </device>
+</context>
