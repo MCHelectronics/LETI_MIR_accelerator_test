@@ -9,14 +9,14 @@
   <!ELEMENT scan-element EMPTY>
   <!ATTLIST scan-element index CDATA #REQUIRED format CDATA #REQUIRED>
 ]>
-<context name="xml" description="Synthetic fixture, not a device capture">
+<context name="xml" description="Synthetic fixture: stream formats as reported by QPSK SDR Lab, not a device capture">
   <device id="iio:device0" name="ad9361-phy"/>
   <device id="iio:device1" name="cf-ad9361-lpc">
-    <channel id="voltage0" type="input"><scan-element index="0" format="le:s12/16&gt;&gt;4"/></channel>
-    <channel id="voltage1" type="input"><scan-element index="1" format="le:s12/16&gt;&gt;4"/></channel>
+    <channel id="voltage0" type="input"><scan-element index="0" format="le:S12/16&gt;&gt;0"/></channel>
+    <channel id="voltage1" type="input"><scan-element index="1" format="le:S12/16&gt;&gt;0"/></channel>
   </device>
   <device id="iio:device2" name="cf-ad9361-dds-core-lpc">
-    <channel id="voltage0" type="output"><scan-element index="0" format="le:s12/16&gt;&gt;4"/></channel>
-    <channel id="voltage1" type="output"><scan-element index="1" format="le:s12/16&gt;&gt;4"/></channel>
+    <channel id="voltage0" type="output"><scan-element index="0" format="le:S16/16&gt;&gt;0"/></channel>
+    <channel id="voltage1" type="output"><scan-element index="1" format="le:S16/16&gt;&gt;0"/></channel>
   </device>
 </context>

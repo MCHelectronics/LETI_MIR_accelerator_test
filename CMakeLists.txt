@@ -99,3 +99,33 @@ if(LAB_WITH_DSP)
     set_tests_properties(spectrum_rejects_missing_file PROPERTIES WILL_FAIL TRUE)
   endif()
 endif()
+
+# Chapter 6: test signals and transmission. Needs the IIO and DSP parts.
+option(LAB_WITH_TX "Build chapter 6 programs: signal generator and TX player" OFF)
+if(LAB_WITH_TX)
+  if(NOT LAB_WITH_IIO OR NOT LAB_WITH_DSP)
+    message(FATAL_ERROR "LAB_WITH_TX requires LAB_WITH_IIO=ON and LAB_WITH_DSP=ON")
+  endif()
+  add_executable(sig_gen examples/ch06/sig_gen.cpp)
+  target_link_libraries(sig_gen PRIVATE lab_core)
+  add_executable(tx_play examples/ch06/tx_play.cpp)
+  target_link_libraries(tx_play PRIVATE lab_iio lab_core)
+  set_target_properties(tx_play PROPERTIES BUILD_RPATH "${LAB_IIO_PREFIX}/lib")
+  foreach(target sig_gen tx_play)
+    target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic)
+  endforeach()
+  if(BUILD_TESTING)
+    add_test(NAME am_sidebands COMMAND ${CMAKE_COMMAND}
+      -DGEN=$<TARGET_FILE:sig_gen> -DVIEW=$<TARGET_FILE:spectrum_view>
+      -DOUT=${CMAKE_CURRENT_BINARY_DIR}/test-am
+      -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/ch06_am.cmake)
+    add_test(NAME fm_loop COMMAND ${CMAKE_COMMAND}
+      -DGEN=$<TARGET_FILE:sig_gen> -DDEMOD=$<TARGET_FILE:fm_demod> -DPEAK=$<TARGET_FILE:wav_peak>
+      -DOUT=${CMAKE_CURRENT_BINARY_DIR}/test-fm6
+      -P ${CMAKE_CURRENT_SOURCE_DIR}/tests/ch06_fm.cmake)
+    # Without --go the player must refuse before opening the board.
+    add_test(NAME tx_requires_go COMMAND tx_play --uri ip:192.0.2.1 --freq 433.92e6
+      --in missing.cf32 --tx-gain -60)
+    set_tests_properties(tx_requires_go PROPERTIES WILL_FAIL TRUE)
+  endif()
+endif()

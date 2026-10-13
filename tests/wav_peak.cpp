@@ -17,6 +17,7 @@ int main(int argc, char** argv) {
     for (unsigned char b[2]; in.read(reinterpret_cast<char*>(b), 2);)
         x.emplace_back(static_cast<std::int16_t>(b[0] | b[1] << 8) / 32768.0f, 0.0f);
     const std::size_t n = 8192;
+    if (x.size() < n) { std::cerr << "WAV is shorter than " << n << " samples\n"; return 1; }
     const auto s = lab::averaged_spectrum_db(x, n, 64);
     std::size_t best = n / 2 + 1;
     for (std::size_t k = n / 2 + 1; k < n; ++k) if (s[k] > s[best]) best = k;
