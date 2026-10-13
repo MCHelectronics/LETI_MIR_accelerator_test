@@ -62,6 +62,14 @@ if(LAB_WITH_IIO OR LAB_WITH_DSP)
 endif()
 
 if(LAB_WITH_IIO)
+  # Chapter 3: board state and RX throughput. Their results belong to a
+  # particular board and link, so they are checked on the stand, not by CTest.
+  foreach(target board_state rx_benchmark)
+    add_executable(${target} examples/ch03/${target}.cpp)
+    target_link_libraries(${target} PRIVATE lab_iio)
+    target_compile_options(${target} PRIVATE -Wall -Wextra -Wpedantic)
+    set_target_properties(${target} PROPERTIES BUILD_RPATH "${LAB_IIO_PREFIX}/lib")
+  endforeach()
   add_executable(rx_capture examples/ch05/rx_capture.cpp)
   target_link_libraries(rx_capture PRIVATE lab_iio lab_core)
   target_compile_options(rx_capture PRIVATE -Wall -Wextra -Wpedantic)
